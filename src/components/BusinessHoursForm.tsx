@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -123,7 +122,7 @@ const BusinessHoursForm = () => {
                     />
                   </div>
                   
-                  <div className="flex items-center space-x-2 justify-start pl-2" style={{ paddingTop: '6px' }}>
+                  <div className="flex items-center space-x-2 justify-start pl-2">
                     <Checkbox
                       id={`closed-${index}`}
                       checked={day.isClosed}
@@ -169,7 +168,7 @@ const BusinessHoursForm = () => {
                   />
                 </div>
                 
-                <div className="flex items-center space-x-2 justify-start pl-2" style={{ paddingTop: '6px' }}>
+                <div className="flex items-center space-x-2 justify-start pl-2">
                   <Checkbox
                     id="holidays-closed"
                     checked={holidays.isClosed}
