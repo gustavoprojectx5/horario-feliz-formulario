@@ -122,7 +122,7 @@ const BusinessHoursForm = () => {
                     />
                   </div>
                   
-                  <div className="flex items-center space-x-2 justify-start pl-2">
+                  <div className="flex items-center space-x-2 justify-start pl-2 mt-6">
                     <Checkbox
                       id={`closed-${index}`}
                       checked={day.isClosed}
@@ -168,7 +168,7 @@ const BusinessHoursForm = () => {
                   />
                 </div>
                 
-                <div className="flex items-center space-x-2 justify-start pl-2">
+                <div className="flex items-center space-x-2 justify-start pl-2 mt-6">
                   <Checkbox
                     id="holidays-closed"
                     checked={holidays.isClosed}
