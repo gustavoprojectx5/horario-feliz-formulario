@@ -90,7 +90,7 @@ const BusinessHoursForm = () => {
           <CardContent className="p-6">
             <div className="space-y-6">
               {schedule.map((day, index) => (
-                <div key={day.day} className="grid grid-cols-3 gap-4 items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div key={day.day} className="grid grid-cols-3 gap-4 items-end p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                   <div className="space-y-2">
                     <Label htmlFor={`open-${index}`} className="text-sm text-gray-600">
                       {day.shortDay} Abertura
@@ -119,7 +119,7 @@ const BusinessHoursForm = () => {
                     />
                   </div>
                   
-                  <div className="flex items-center space-x-2 justify-start pl-4">
+                  <div className="flex items-center space-x-2 justify-start pl-2 pb-1">
                     <Checkbox
                       id={`closed-${index}`}
                       checked={day.isClosed}
@@ -136,7 +136,7 @@ const BusinessHoursForm = () => {
               ))}
               
               {/* Campo Feriados com destaque */}
-              <div className="grid grid-cols-3 gap-4 items-center p-4 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors">
+              <div className="grid grid-cols-3 gap-4 items-end p-4 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors">
                 <div className="space-y-2">
                   <Label htmlFor="holidays-open" className="text-sm text-orange-700 font-medium">
                     Feriados Abertura
@@ -165,7 +165,7 @@ const BusinessHoursForm = () => {
                   />
                 </div>
                 
-                <div className="flex items-center space-x-2 justify-start pl-4">
+                <div className="flex items-center space-x-2 justify-start pl-2 pb-1">
                   <Checkbox
                     id="holidays-closed"
                     checked={holidays.isClosed}
