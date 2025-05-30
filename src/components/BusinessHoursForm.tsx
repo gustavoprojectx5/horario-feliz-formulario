@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Clock, Wifi, Car, Accessibility } from 'lucide-react';
+import { Clock, Wifi, Car, Accessibility, Heart, Baby } from 'lucide-react';
 
 interface DaySchedule {
   day: string;
+  shortDay: string;
   openTime: string;
   closeTime: string;
   isClosed: boolean;
@@ -25,13 +26,13 @@ interface AdditionalServices {
 
 const BusinessHoursForm = () => {
   const [schedule, setSchedule] = useState<DaySchedule[]>([
-    { day: 'Segunda-feira', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Terça-feira', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Quarta-feira', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Quinta-feira', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Sexta-feira', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Sábado', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Domingo', openTime: '', closeTime: '', isClosed: false },
+    { day: 'Segunda-feira', shortDay: 'Segunda', openTime: '', closeTime: '', isClosed: false },
+    { day: 'Terça-feira', shortDay: 'Terça', openTime: '', closeTime: '', isClosed: false },
+    { day: 'Quarta-feira', shortDay: 'Quarta', openTime: '', closeTime: '', isClosed: false },
+    { day: 'Quinta-feira', shortDay: 'Quinta', openTime: '', closeTime: '', isClosed: false },
+    { day: 'Sexta-feira', shortDay: 'Sexta', openTime: '', closeTime: '', isClosed: false },
+    { day: 'Sábado', shortDay: 'Sábado', openTime: '', closeTime: '', isClosed: false },
+    { day: 'Domingo', shortDay: 'Domingo', openTime: '', closeTime: '', isClosed: false },
   ]);
 
   const [services, setServices] = useState<AdditionalServices>({
@@ -78,14 +79,10 @@ const BusinessHoursForm = () => {
           <CardContent className="p-6">
             <div className="space-y-6">
               {schedule.map((day, index) => (
-                <div key={day.day} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <div className="font-medium text-gray-700 md:text-right">
-                    {day.day}
-                  </div>
-                  
+                <div key={day.day} className="grid grid-cols-4 gap-4 items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                   <div className="space-y-2">
                     <Label htmlFor={`open-${index}`} className="text-sm text-gray-600">
-                      Abertura
+                      {day.shortDay} Abertura
                     </Label>
                     <Input
                       id={`open-${index}`}
@@ -99,7 +96,7 @@ const BusinessHoursForm = () => {
                   
                   <div className="space-y-2">
                     <Label htmlFor={`close-${index}`} className="text-sm text-gray-600">
-                      Fechamento
+                      {day.shortDay} Fechamento
                     </Label>
                     <Input
                       id={`close-${index}`}
@@ -111,7 +108,7 @@ const BusinessHoursForm = () => {
                     />
                   </div>
                   
-                  <div className="flex items-center space-x-2 justify-center md:justify-start">
+                  <div className="flex items-center space-x-2 justify-center">
                     <Checkbox
                       id={`closed-${index}`}
                       checked={day.isClosed}
@@ -124,6 +121,8 @@ const BusinessHoursForm = () => {
                       Fechado
                     </Label>
                   </div>
+                  
+                  <div></div>
                 </div>
               ))}
             </div>
@@ -132,13 +131,16 @@ const BusinessHoursForm = () => {
 
         <Separator className="my-8" />
 
-        {/* Serviços Adicionais */}
+        {/* Informações Adicionais */}
         <Card className="shadow-lg">
           <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50">
             <CardTitle className="flex items-center gap-2 text-xl">
               <Wifi className="w-5 h-5 text-green-600" />
-              Serviços Adicionais
+              Informações Adicionais
             </CardTitle>
+            <p className="text-gray-600 text-sm mt-2">
+              Marque as opções que se encaixam nas características do seu estabelecimento
+            </p>
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -162,9 +164,12 @@ const BusinessHoursForm = () => {
                   checked={services.kidsArea}
                   onCheckedChange={(checked) => updateService('kidsArea', checked as boolean)}
                 />
-                <Label htmlFor="kids-area" className="font-medium">
-                  Área Kids / Brinquedoteca
-                </Label>
+                <div className="flex items-center gap-2">
+                  <Baby className="w-4 h-4 text-pink-500" />
+                  <Label htmlFor="kids-area" className="font-medium">
+                    Área Kids / Brinquedoteca
+                  </Label>
+                </div>
               </div>
 
               <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
@@ -173,9 +178,12 @@ const BusinessHoursForm = () => {
                   checked={services.petFriendly}
                   onCheckedChange={(checked) => updateService('petFriendly', checked as boolean)}
                 />
-                <Label htmlFor="pet-friendly" className="font-medium">
-                  Pet Friendly
-                </Label>
+                <div className="flex items-center gap-2">
+                  <Heart className="w-4 h-4 text-red-500" />
+                  <Label htmlFor="pet-friendly" className="font-medium">
+                    Pet Friendly
+                  </Label>
+                </div>
               </div>
 
               <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
