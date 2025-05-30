@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Clock, Wifi, Car, Accessibility, Heart, Baby, MessageSquare } from 'lucide-react';
+import { Clock, Wifi, Car, Accessibility, Heart, Baby, MessageSquare, Truck, CreditCard } from 'lucide-react';
 
 interface DaySchedule {
   day: string;
@@ -22,6 +23,8 @@ interface AdditionalServices {
   petFriendly: boolean;
   parking: boolean;
   accessibility: boolean;
+  delivery: boolean;
+  unimedInsurance: boolean;
 }
 
 const BusinessHoursForm = () => {
@@ -47,6 +50,8 @@ const BusinessHoursForm = () => {
     petFriendly: false,
     parking: false,
     accessibility: false,
+    delivery: false,
+    unimedInsurance: false,
   });
 
   const [comments, setComments] = useState('');
@@ -253,6 +258,34 @@ const BusinessHoursForm = () => {
                   <Car className="w-4 h-4 text-gray-600" />
                   <Label htmlFor="parking" className="font-medium">
                     Estacionamento
+                  </Label>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <Checkbox
+                  id="delivery"
+                  checked={services.delivery}
+                  onCheckedChange={(checked) => updateService('delivery', checked as boolean)}
+                />
+                <div className="flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-orange-500" />
+                  <Label htmlFor="delivery" className="font-medium">
+                    Delivery
+                  </Label>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <Checkbox
+                  id="unimed-insurance"
+                  checked={services.unimedInsurance}
+                  onCheckedChange={(checked) => updateService('unimedInsurance', checked as boolean)}
+                />
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-green-500" />
+                  <Label htmlFor="unimed-insurance" className="font-medium">
+                    Convênio Unimed
                   </Label>
                 </div>
               </div>
