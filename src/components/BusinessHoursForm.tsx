@@ -1,12 +1,12 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Clock, Wifi, Car, Accessibility, Heart, Baby } from 'lucide-react';
+import { Clock, Wifi, Car, Accessibility, Heart, Baby, MessageSquare } from 'lucide-react';
 
 interface DaySchedule {
   day: string;
@@ -49,6 +49,8 @@ const BusinessHoursForm = () => {
     accessibility: false,
   });
 
+  const [comments, setComments] = useState('');
+
   const updateSchedule = (index: number, field: keyof DaySchedule, value: string | boolean) => {
     const newSchedule = [...schedule];
     newSchedule[index] = { ...newSchedule[index], [field]: value };
@@ -68,6 +70,7 @@ const BusinessHoursForm = () => {
     console.log('Horários de funcionamento:', schedule);
     console.log('Feriados:', holidays);
     console.log('Serviços adicionais:', services);
+    console.log('Comentários:', comments);
     // Aqui você pode processar os dados do formulário
   };
 
@@ -119,7 +122,7 @@ const BusinessHoursForm = () => {
                     />
                   </div>
                   
-                  <div className="flex items-center space-x-2 justify-start pl-2 pb-1">
+                  <div className="flex items-center space-x-2 justify-start pl-2 pt-1">
                     <Checkbox
                       id={`closed-${index}`}
                       checked={day.isClosed}
@@ -165,7 +168,7 @@ const BusinessHoursForm = () => {
                   />
                 </div>
                 
-                <div className="flex items-center space-x-2 justify-start pl-2 pb-1">
+                <div className="flex items-center space-x-2 justify-start pl-2 pt-1">
                   <Checkbox
                     id="holidays-closed"
                     checked={holidays.isClosed}
@@ -267,6 +270,33 @@ const BusinessHoursForm = () => {
                   </Label>
                 </div>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Separator className="my-8" />
+
+        {/* Comentários e Observações */}
+        <Card className="shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-violet-50">
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <MessageSquare className="w-5 h-5 text-purple-600" />
+              Comentários e Observações
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="space-y-2">
+              <Label htmlFor="comments" className="text-sm text-gray-600">
+                Informações adicionais sobre o estabelecimento
+              </Label>
+              <Textarea
+                id="comments"
+                placeholder="Ex: Ambiente climatizado, música ao vivo aos finais de semana, etc..."
+                value={comments}
+                onChange={(e) => setComments(e.target.value)}
+                className="min-h-[60px] resize-none"
+                rows={2}
+              />
             </div>
           </CardContent>
         </Card>
