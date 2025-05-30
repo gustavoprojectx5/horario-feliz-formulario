@@ -35,6 +35,12 @@ const BusinessHoursForm = () => {
     { day: 'Domingo', shortDay: 'Domingo', openTime: '', closeTime: '', isClosed: false },
   ]);
 
+  const [holidays, setHolidays] = useState<{ openTime: string; closeTime: string; isClosed: boolean }>({
+    openTime: '',
+    closeTime: '',
+    isClosed: false,
+  });
+
   const [services, setServices] = useState<AdditionalServices>({
     freeWifi: false,
     kidsArea: false,
@@ -49,6 +55,10 @@ const BusinessHoursForm = () => {
     setSchedule(newSchedule);
   };
 
+  const updateHolidays = (field: string, value: string | boolean) => {
+    setHolidays(prev => ({ ...prev, [field]: value }));
+  };
+
   const updateService = (service: keyof AdditionalServices, checked: boolean) => {
     setServices(prev => ({ ...prev, [service]: checked }));
   };
@@ -56,6 +66,7 @@ const BusinessHoursForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Horários de funcionamento:', schedule);
+    console.log('Feriados:', holidays);
     console.log('Serviços adicionais:', services);
     // Aqui você pode processar os dados do formulário
   };
@@ -79,7 +90,7 @@ const BusinessHoursForm = () => {
           <CardContent className="p-6">
             <div className="space-y-6">
               {schedule.map((day, index) => (
-                <div key={day.day} className="grid grid-cols-4 gap-4 items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div key={day.day} className="grid grid-cols-3 gap-4 items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                   <div className="space-y-2">
                     <Label htmlFor={`open-${index}`} className="text-sm text-gray-600">
                       {day.shortDay} Abertura
@@ -108,7 +119,7 @@ const BusinessHoursForm = () => {
                     />
                   </div>
                   
-                  <div className="flex items-center space-x-2 justify-center">
+                  <div className="flex items-center space-x-2 justify-start pl-4">
                     <Checkbox
                       id={`closed-${index}`}
                       checked={day.isClosed}
@@ -121,10 +132,53 @@ const BusinessHoursForm = () => {
                       Fechado
                     </Label>
                   </div>
-                  
-                  <div></div>
                 </div>
               ))}
+              
+              {/* Campo Feriados com destaque */}
+              <div className="grid grid-cols-3 gap-4 items-center p-4 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors">
+                <div className="space-y-2">
+                  <Label htmlFor="holidays-open" className="text-sm text-orange-700 font-medium">
+                    Feriados Abertura
+                  </Label>
+                  <Input
+                    id="holidays-open"
+                    type="time"
+                    value={holidays.openTime}
+                    onChange={(e) => updateHolidays('openTime', e.target.value)}
+                    disabled={holidays.isClosed}
+                    className="w-full border-orange-300 focus:border-orange-500"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="holidays-close" className="text-sm text-orange-700 font-medium">
+                    Feriados Fechamento
+                  </Label>
+                  <Input
+                    id="holidays-close"
+                    type="time"
+                    value={holidays.closeTime}
+                    onChange={(e) => updateHolidays('closeTime', e.target.value)}
+                    disabled={holidays.isClosed}
+                    className="w-full border-orange-300 focus:border-orange-500"
+                  />
+                </div>
+                
+                <div className="flex items-center space-x-2 justify-start pl-4">
+                  <Checkbox
+                    id="holidays-closed"
+                    checked={holidays.isClosed}
+                    onCheckedChange={(checked) => updateHolidays('isClosed', checked as boolean)}
+                  />
+                  <Label
+                    htmlFor="holidays-closed"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-orange-700"
+                  >
+                    Fechado
+                  </Label>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
