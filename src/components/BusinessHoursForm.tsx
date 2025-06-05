@@ -7,13 +7,18 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Clock, Wifi, Car, Accessibility, Heart, Baby, MessageSquare, Truck, CreditCard } from 'lucide-react';
+import { Clock, Wifi, Car, Accessibility, Heart, Baby, MessageSquare, Truck, CreditCard, Plus, Trash2 } from 'lucide-react';
+
+interface TimeSlot {
+  id: string;
+  openTime: string;
+  closeTime: string;
+}
 
 interface DaySchedule {
   day: string;
   shortDay: string;
-  openTime: string;
-  closeTime: string;
+  timeSlots: TimeSlot[];
   isClosed: boolean;
 }
 
@@ -29,18 +34,17 @@ interface AdditionalServices {
 
 const BusinessHoursForm = () => {
   const [schedule, setSchedule] = useState<DaySchedule[]>([
-    { day: 'Segunda-feira', shortDay: 'Segunda', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Terça-feira', shortDay: 'Terça', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Quarta-feira', shortDay: 'Quarta', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Quinta-feira', shortDay: 'Quinta', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Sexta-feira', shortDay: 'Sexta', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Sábado', shortDay: 'Sábado', openTime: '', closeTime: '', isClosed: false },
-    { day: 'Domingo', shortDay: 'Domingo', openTime: '', closeTime: '', isClosed: false },
+    { day: 'Segunda-feira', shortDay: 'Segunda', timeSlots: [{ id: '1', openTime: '', closeTime: '' }], isClosed: false },
+    { day: 'Terça-feira', shortDay: 'Terça', timeSlots: [{ id: '1', openTime: '', closeTime: '' }], isClosed: false },
+    { day: 'Quarta-feira', shortDay: 'Quarta', timeSlots: [{ id: '1', openTime: '', closeTime: '' }], isClosed: false },
+    { day: 'Quinta-feira', shortDay: 'Quinta', timeSlots: [{ id: '1', openTime: '', closeTime: '' }], isClosed: false },
+    { day: 'Sexta-feira', shortDay: 'Sexta', timeSlots: [{ id: '1', openTime: '', closeTime: '' }], isClosed: false },
+    { day: 'Sábado', shortDay: 'Sábado', timeSlots: [{ id: '1', openTime: '', closeTime: '' }], isClosed: false },
+    { day: 'Domingo', shortDay: 'Domingo', timeSlots: [{ id: '1', openTime: '', closeTime: '' }], isClosed: false },
   ]);
 
-  const [holidays, setHolidays] = useState<{ openTime: string; closeTime: string; isClosed: boolean }>({
-    openTime: '',
-    closeTime: '',
+  const [holidays, setHolidays] = useState<{ timeSlots: TimeSlot[]; isClosed: boolean }>({
+    timeSlots: [{ id: '1', openTime: '', closeTime: '' }],
     isClosed: false,
   });
 
@@ -56,14 +60,64 @@ const BusinessHoursForm = () => {
 
   const [comments, setComments] = useState('');
 
-  const updateSchedule = (index: number, field: keyof DaySchedule, value: string | boolean) => {
+  const updateTimeSlot = (dayIndex: number, slotId: string, field: 'openTime' | 'closeTime', value: string) => {
     const newSchedule = [...schedule];
-    newSchedule[index] = { ...newSchedule[index], [field]: value };
+    const timeSlotIndex = newSchedule[dayIndex].timeSlots.findIndex(slot => slot.id === slotId);
+    if (timeSlotIndex !== -1) {
+      newSchedule[dayIndex].timeSlots[timeSlotIndex][field] = value;
+      setSchedule(newSchedule);
+    }
+  };
+
+  const updateDayStatus = (dayIndex: number, isClosed: boolean) => {
+    const newSchedule = [...schedule];
+    newSchedule[dayIndex].isClosed = isClosed;
     setSchedule(newSchedule);
   };
 
-  const updateHolidays = (field: string, value: string | boolean) => {
-    setHolidays(prev => ({ ...prev, [field]: value }));
+  const addTimeSlot = (dayIndex: number) => {
+    const newSchedule = [...schedule];
+    const newSlotId = Date.now().toString();
+    newSchedule[dayIndex].timeSlots.push({ id: newSlotId, openTime: '', closeTime: '' });
+    setSchedule(newSchedule);
+  };
+
+  const removeTimeSlot = (dayIndex: number, slotId: string) => {
+    const newSchedule = [...schedule];
+    if (newSchedule[dayIndex].timeSlots.length > 1) {
+      newSchedule[dayIndex].timeSlots = newSchedule[dayIndex].timeSlots.filter(slot => slot.id !== slotId);
+      setSchedule(newSchedule);
+    }
+  };
+
+  const updateHolidayTimeSlot = (slotId: string, field: 'openTime' | 'closeTime', value: string) => {
+    const timeSlotIndex = holidays.timeSlots.findIndex(slot => slot.id === slotId);
+    if (timeSlotIndex !== -1) {
+      const newTimeSlots = [...holidays.timeSlots];
+      newTimeSlots[timeSlotIndex][field] = value;
+      setHolidays(prev => ({ ...prev, timeSlots: newTimeSlots }));
+    }
+  };
+
+  const addHolidayTimeSlot = () => {
+    const newSlotId = Date.now().toString();
+    setHolidays(prev => ({
+      ...prev,
+      timeSlots: [...prev.timeSlots, { id: newSlotId, openTime: '', closeTime: '' }]
+    }));
+  };
+
+  const removeHolidayTimeSlot = (slotId: string) => {
+    if (holidays.timeSlots.length > 1) {
+      setHolidays(prev => ({
+        ...prev,
+        timeSlots: prev.timeSlots.filter(slot => slot.id !== slotId)
+      }));
+    }
+  };
+
+  const updateHolidayStatus = (isClosed: boolean) => {
+    setHolidays(prev => ({ ...prev, isClosed }));
   };
 
   const updateService = (service: keyof AdditionalServices, checked: boolean) => {
@@ -76,7 +130,6 @@ const BusinessHoursForm = () => {
     console.log('Feriados:', holidays);
     console.log('Serviços adicionais:', services);
     console.log('Comentários:', comments);
-    // Aqui você pode processar os dados do formulário
   };
 
   return (
@@ -94,98 +147,163 @@ const BusinessHoursForm = () => {
               <Clock className="w-5 h-5 text-blue-600" />
               Horários de Funcionamento
             </CardTitle>
+            <p className="text-gray-600 text-sm mt-2">
+              Use o botão "+" para adicionar múltiplos horários no mesmo dia (ex: almoço e jantar)
+            </p>
           </CardHeader>
           <CardContent className="p-6">
             <div className="space-y-6">
-              {schedule.map((day, index) => (
-                <div key={day.day} className="grid grid-cols-3 gap-4 items-end p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <div className="space-y-2">
-                    <Label htmlFor={`open-${index}`} className="text-sm text-gray-600">
-                      {day.shortDay} Abertura
-                    </Label>
-                    <Input
-                      id={`open-${index}`}
-                      type="time"
-                      value={day.openTime}
-                      onChange={(e) => updateSchedule(index, 'openTime', e.target.value)}
-                      disabled={day.isClosed}
-                      className="w-full"
-                    />
+              {schedule.map((day, dayIndex) => (
+                <div key={day.day} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium text-gray-900">{day.shortDay}</h3>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`closed-${dayIndex}`}
+                          checked={day.isClosed}
+                          onCheckedChange={(checked) => updateDayStatus(dayIndex, checked as boolean)}
+                        />
+                        <Label htmlFor={`closed-${dayIndex}`} className="text-sm font-medium">
+                          Fechado
+                        </Label>
+                      </div>
+                      {!day.isClosed && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => addTimeSlot(dayIndex)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor={`close-${index}`} className="text-sm text-gray-600">
-                      {day.shortDay} Fechamento
-                    </Label>
-                    <Input
-                      id={`close-${index}`}
-                      type="time"
-                      value={day.closeTime}
-                      onChange={(e) => updateSchedule(index, 'closeTime', e.target.value)}
-                      disabled={day.isClosed}
-                      className="w-full"
-                    />
-                  </div>
-                  
-                  <div className="flex items-center space-x-2 justify-start pl-2 mt-6">
-                    <Checkbox
-                      id={`closed-${index}`}
-                      checked={day.isClosed}
-                      onCheckedChange={(checked) => updateSchedule(index, 'isClosed', checked as boolean)}
-                    />
-                    <Label
-                      htmlFor={`closed-${index}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Fechado
-                    </Label>
-                  </div>
+                  {!day.isClosed && (
+                    <div className="space-y-3">
+                      {day.timeSlots.map((slot, slotIndex) => (
+                        <div key={slot.id} className="grid grid-cols-5 gap-3 items-center">
+                          <div className="space-y-1">
+                            <Label className="text-xs text-gray-500">
+                              Abertura {slotIndex + 1}
+                            </Label>
+                            <Input
+                              type="time"
+                              value={slot.openTime}
+                              onChange={(e) => updateTimeSlot(dayIndex, slot.id, 'openTime', e.target.value)}
+                              className="w-full"
+                            />
+                          </div>
+                          
+                          <div className="space-y-1">
+                            <Label className="text-xs text-gray-500">
+                              Fechamento {slotIndex + 1}
+                            </Label>
+                            <Input
+                              type="time"
+                              value={slot.closeTime}
+                              onChange={(e) => updateTimeSlot(dayIndex, slot.id, 'closeTime', e.target.value)}
+                              className="w-full"
+                            />
+                          </div>
+                          
+                          <div className="flex justify-center">
+                            {day.timeSlots.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeTimeSlot(dayIndex, slot.id)}
+                                className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
               
-              {/* Campo Feriados com destaque */}
-              <div className="grid grid-cols-3 gap-4 items-end p-4 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors">
-                <div className="space-y-2">
-                  <Label htmlFor="holidays-open" className="text-sm text-orange-700 font-medium">
-                    Feriados Abertura
-                  </Label>
-                  <Input
-                    id="holidays-open"
-                    type="time"
-                    value={holidays.openTime}
-                    onChange={(e) => updateHolidays('openTime', e.target.value)}
-                    disabled={holidays.isClosed}
-                    className="w-full border-orange-300 focus:border-orange-500"
-                  />
+              {/* Feriados */}
+              <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-orange-700">Feriados</h3>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="holidays-closed"
+                        checked={holidays.isClosed}
+                        onCheckedChange={(checked) => updateHolidayStatus(checked as boolean)}
+                      />
+                      <Label htmlFor="holidays-closed" className="text-sm font-medium text-orange-700">
+                        Fechado
+                      </Label>
+                    </div>
+                    {!holidays.isClosed && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addHolidayTimeSlot}
+                        className="h-8 w-8 p-0 border-orange-300 text-orange-600 hover:bg-orange-100"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="holidays-close" className="text-sm text-orange-700 font-medium">
-                    Feriados Fechamento
-                  </Label>
-                  <Input
-                    id="holidays-close"
-                    type="time"
-                    value={holidays.closeTime}
-                    onChange={(e) => updateHolidays('closeTime', e.target.value)}
-                    disabled={holidays.isClosed}
-                    className="w-full border-orange-300 focus:border-orange-500"
-                  />
-                </div>
-                
-                <div className="flex items-center space-x-2 justify-start pl-2 mt-6">
-                  <Checkbox
-                    id="holidays-closed"
-                    checked={holidays.isClosed}
-                    onCheckedChange={(checked) => updateHolidays('isClosed', checked as boolean)}
-                  />
-                  <Label
-                    htmlFor="holidays-closed"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-orange-700"
-                  >
-                    Fechado
-                  </Label>
-                </div>
+                {!holidays.isClosed && (
+                  <div className="space-y-3">
+                    {holidays.timeSlots.map((slot, slotIndex) => (
+                      <div key={slot.id} className="grid grid-cols-5 gap-3 items-center">
+                        <div className="space-y-1">
+                          <Label className="text-xs text-orange-600">
+                            Abertura {slotIndex + 1}
+                          </Label>
+                          <Input
+                            type="time"
+                            value={slot.openTime}
+                            onChange={(e) => updateHolidayTimeSlot(slot.id, 'openTime', e.target.value)}
+                            className="w-full border-orange-300 focus:border-orange-500"
+                          />
+                        </div>
+                        
+                        <div className="space-y-1">
+                          <Label className="text-xs text-orange-600">
+                            Fechamento {slotIndex + 1}
+                          </Label>
+                          <Input
+                            type="time"
+                            value={slot.closeTime}
+                            onChange={(e) => updateHolidayTimeSlot(slot.id, 'closeTime', e.target.value)}
+                            className="w-full border-orange-300 focus:border-orange-500"
+                          />
+                        </div>
+                        
+                        <div className="flex justify-center">
+                          {holidays.timeSlots.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeHolidayTimeSlot(slot.id)}
+                              className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
