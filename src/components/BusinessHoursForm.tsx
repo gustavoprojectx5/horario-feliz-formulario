@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
+import { TimeInput } from '@/components/ui/time-input';
 import { Clock, Wifi, Car, Accessibility, Heart, Baby, MessageSquare, Truck, CreditCard, Plus, Trash2 } from 'lucide-react';
 
 interface TimeSlot {
@@ -190,11 +190,11 @@ const BusinessHoursForm = () => {
                             <Label className="text-xs text-gray-500">
                               Abertura {slotIndex + 1}
                             </Label>
-                            <Input
-                              type="time"
+                            <TimeInput
                               value={slot.openTime}
-                              onChange={(e) => updateTimeSlot(dayIndex, slot.id, 'openTime', e.target.value)}
+                              onChange={(value) => updateTimeSlot(dayIndex, slot.id, 'openTime', value)}
                               className="w-full"
+                              placeholder="09:00"
                             />
                           </div>
                           
@@ -202,11 +202,11 @@ const BusinessHoursForm = () => {
                             <Label className="text-xs text-gray-500">
                               Fechamento {slotIndex + 1}
                             </Label>
-                            <Input
-                              type="time"
+                            <TimeInput
                               value={slot.closeTime}
-                              onChange={(e) => updateTimeSlot(dayIndex, slot.id, 'closeTime', e.target.value)}
+                              onChange={(value) => updateTimeSlot(dayIndex, slot.id, 'closeTime', value)}
                               className="w-full"
+                              placeholder="18:00"
                             />
                           </div>
                           
@@ -267,11 +267,11 @@ const BusinessHoursForm = () => {
                           <Label className="text-xs text-orange-600">
                             Abertura {slotIndex + 1}
                           </Label>
-                          <Input
-                            type="time"
+                          <TimeInput
                             value={slot.openTime}
-                            onChange={(e) => updateHolidayTimeSlot(slot.id, 'openTime', e.target.value)}
+                            onChange={(value) => updateHolidayTimeSlot(slot.id, 'openTime', value)}
                             className="w-full border-orange-300 focus:border-orange-500"
+                            placeholder="09:00"
                           />
                         </div>
                         
@@ -279,11 +279,11 @@ const BusinessHoursForm = () => {
                           <Label className="text-xs text-orange-600">
                             Fechamento {slotIndex + 1}
                           </Label>
-                          <Input
-                            type="time"
+                          <TimeInput
                             value={slot.closeTime}
-                            onChange={(e) => updateHolidayTimeSlot(slot.id, 'closeTime', e.target.value)}
+                            onChange={(value) => updateHolidayTimeSlot(slot.id, 'closeTime', value)}
                             className="w-full border-orange-300 focus:border-orange-500"
+                            placeholder="18:00"
                           />
                         </div>
                         
